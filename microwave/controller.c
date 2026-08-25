@@ -23,7 +23,7 @@ int main() {
         printf("4. Decrease Time (-30s)\n");
         printf("5. Switch Watt (500W/700W)\n");
         printf("6. Press START\n");
-        printf("7. Press STOP/CLEAR\n");
+        printf("7. Press STOP\n");
         printf("0. Exit Controller\n");
         printf("Choose action -> ");
         

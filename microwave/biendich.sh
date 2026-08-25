@@ -1,13 +1,16 @@
 #!/bin/bash
 
 # Clean các file cũ[cite: 8]
-rm -f makeshm microwave_engine controller
+rm -f makeshm microwave_engine controller test_timer test_door test_power test_sbutton
 
 # Biên dịch các tiến trình mới
 gcc makeshm.c -o makeshm
 gcc microwave_engine.c -o microwave_engine
 gcc controller.c -o controller
-
+gcc test_timer.c -o test_timer
+gcc test_door.c -o test_door
+gcc test_power.c -o test_power
+gcc test_sbutton.c -o test_sbutton
 echo "Biên dịch thành công!"
 
 
