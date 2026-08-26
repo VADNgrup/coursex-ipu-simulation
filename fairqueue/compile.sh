@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
-mkdir -p .build
+mkdir -p .build 
+mkdir -p .tmp
 echo "Compiling cafeteria simulation binaries..."
 gcc core/init_mq.c            -o .build/init_mq
 gcc core/generator.c          -o .build/generator
