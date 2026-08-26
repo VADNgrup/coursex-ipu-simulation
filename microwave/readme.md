@@ -31,5 +31,11 @@ stateDiagram-v2
     FINISHED --> IDLE : Press_Stop / Open_Door
 ```
 
+## Installation
+- please run this command to compile all *.c file
 
+```bash
+bash biendich.sh
+
+```
 
