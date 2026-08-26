@@ -46,7 +46,6 @@ int main() {
     int mq_cashing = msgget(ftok(".", KEY_CASHING), 0666 | IPC_CREAT);
     int mq_food    = msgget(ftok(".", KEY_FOOD),    0666 | IPC_CREAT);
     int mq_waiting = msgget(ftok(".", KEY_WAITING), 0666 | IPC_CREAT);
-    int mq_table   = msgget(ftok(".", KEY_TABLE),   0666 | IPC_CREAT);
 
     CafeteriaConfig *cfg = get_shared_config();
 
@@ -62,7 +61,7 @@ int main() {
         long len_cashing = get_queue_count(mq_cashing);
         long len_food    = get_queue_count(mq_food);
         long len_waiting = get_queue_count(mq_waiting);
-        long len_table   = get_queue_count(mq_table);
+        long len_table   = count_occupied_tables(cfg);
         int max_tables   = cfg ? cfg->num_tables : DEFAULT_NUM_TABLES;
 
         printf("===============================================================================\n");
