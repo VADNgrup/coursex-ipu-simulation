@@ -4,8 +4,8 @@ import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
 from datetime import datetime
 
-LOG_FILE = "/tmp/cafeteria_log.csv"
-DASH_FILE = "/tmp/cafeteria_dashboard.csv"
+LOG_FILE = "./.tmp/cafeteria_log.csv"
+DASH_FILE = "./.tmp/cafeteria_dashboard.csv"
 
 def plot_metrics():
     if not os.path.exists(LOG_FILE) or os.stat(LOG_FILE).st_size == 0:
