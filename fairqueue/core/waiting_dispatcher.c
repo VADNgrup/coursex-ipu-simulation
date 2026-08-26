@@ -38,7 +38,7 @@ int main() {
                        current_eating + 1, max_tables, msg.student.id, wait_time);
 
                 // Chuyển sang Q_TABLE
-                msg.student.enter_queue_time = time(NULL);
+                // msg.student.enter_queue_time = time(NULL);
                 msgsnd(msgid_table, &msg, sizeof(Student), 0);
             }
         }

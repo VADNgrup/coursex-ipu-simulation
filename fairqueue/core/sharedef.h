@@ -39,9 +39,9 @@ typedef struct {
 // Default initial config values
 #define DEFAULT_RAMEN_RATIO      50  // 50% Ramen, 50% Kare
 #define DEFAULT_RAMEN_PREP_MIN   15
-#define DEFAULT_RAMEN_PREP_MAX   45
+#define DEFAULT_RAMEN_PREP_MAX   25
 #define DEFAULT_KARE_PREP_MIN    20
-#define DEFAULT_KARE_PREP_MAX    45
+#define DEFAULT_KARE_PREP_MAX    30
 #define DEFAULT_MAX_EATING_TIME  600 // 10 minutes
 #define DEFAULT_NUM_TABLES       50
 

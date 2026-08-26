@@ -17,17 +17,18 @@ int main() {
         struct mesg_buffer msg;
         if (msgrcv(msgid_in, &msg, sizeof(Student), 0, 0) == -1) continue;
 
+        
+
         double wait_time = difftime(time(NULL), msg.student.enter_queue_time);
 
         // Sleep ngẫu nhiên thời gian thanh toán
         int proc_time = 5 + rand() % 11; // 5-15s
         sleep(proc_time);
-
+        
         printf("[Cashier] Student %d | %s | Wait: %.0fs | Pay: %ds\n",
                msg.student.id, food_name(msg.student.food), wait_time, proc_time);
 
-        write_log("CASHING", msg.student.id, food_name(msg.student.food),
-                  wait_time, proc_time);
+        write_log("CASHING", msg.student.id, food_name(msg.student.food), wait_time, proc_time);
 
         // Đẩy sang Q_FOOD
         msg.student.enter_queue_time = time(NULL);

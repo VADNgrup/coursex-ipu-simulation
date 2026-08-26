@@ -35,12 +35,12 @@ int main() {
             prep_time = kare_min  + rand() % (kare_max  - kare_min  + 1);
         }
         sleep(prep_time);
+        
 
         printf("[Kitchen] Student %d | %s done | Wait: %.0fs | Prep: %ds\n",
                msg.student.id, food_name(msg.student.food), wait_time, prep_time);
 
-        write_log("KITCHEN", msg.student.id, food_name(msg.student.food),
-                  wait_time, prep_time);
+        write_log("KITCHEN", msg.student.id, food_name(msg.student.food), wait_time, prep_time);
 
         // Đẩy vào Q_WAITING (chờ bàn)
         msg.student.enter_queue_time = time(NULL);

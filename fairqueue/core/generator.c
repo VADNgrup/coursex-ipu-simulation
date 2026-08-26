@@ -25,7 +25,7 @@ int main() {
            total_limit, max_batch, interval);
 
     while (id_counter <= total_limit) {
-        sleep(interval);
+        
 
         // int count = 1 + rand() % max_batch;
         int count = max_batch;
@@ -50,6 +50,7 @@ int main() {
                        msg.student.id, total_limit);
             }
         }
+        sleep(interval);
     }
 
     printf("[Generator] Finished generating all %d students.\n", total_limit);
