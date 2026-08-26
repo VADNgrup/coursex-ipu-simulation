@@ -8,7 +8,7 @@ void print_menu(CafeteriaConfig *cfg) {
     printf(" 2. Ramen Prep Time Range : [%d - %d] seconds\n", cfg->ramen_prep_min, cfg->ramen_prep_max);
     printf(" 3. Kare Prep Time Range  : [%d - %d] seconds\n", cfg->kare_prep_min, cfg->kare_prep_max);
     printf(" 4. Max Student Eat Time  : [1 - %d] seconds\n", cfg->max_eating_time);
-    printf(" 5. Number of Tables      : %d tables\n", cfg->num_tables);
+    printf(" 5. Number of Tables      : %d tables (Max %d)\n", cfg->num_tables, MAX_TABLE_SLOTS);
     printf(" 6. Reset to Default Values\n");
     printf(" 0. Exit Control Panel\n");
     printf("=======================================================\n");
@@ -88,13 +88,13 @@ int main() {
                 break;
 
             case 5:
-                printf("Enter new Number of Tables (1-100): ");
+                printf("Enter new Number of Tables (1-%d): ", MAX_TABLE_SLOTS);
                 scanf("%d", &num_val);
-                if (num_val >= 1 && num_val <= 100) {
+                if (num_val >= 1 && num_val <= MAX_TABLE_SLOTS) {
                     cfg->num_tables = num_val;
                     printf(">> Updated Number of Tables to %d!\n", num_val);
                 } else {
-                    printf(">> Invalid number of tables (1-100)!\n");
+                    printf(">> Invalid number of tables (1-%d)!\n", MAX_TABLE_SLOTS);
                 }
                 break;
 

@@ -14,11 +14,24 @@ int main() {
     init_q(KEY_CASHING, "Q_CASHING (1. Ordering/Payment)");
     init_q(KEY_FOOD,    "Q_FOOD    (2. Cooking/Kitchen)");
     init_q(KEY_WAITING, "Q_WAITING (3. Waiting for Table)");
-    init_q(KEY_TABLE,   "Q_TABLE   (4. Active Eating Table)");
 
-    // Initialize Shared Configuration with defaults
+    // Clean up legacy KEY_TABLE queue if exists
+    key_t old_table_key = ftok(".", KEY_TABLE);
+    int old_table_q = msgget(old_table_key, 0666);
+    if (old_table_q != -1) {
+        msgctl(old_table_q, IPC_RMID, NULL);
+    }
+
+    // Reset and Initialize Shared Configuration & Tables
+    key_t shm_key = ftok(".", KEY_CONFIG_SHM);
+    int old_shm = shmget(shm_key, 0, 0666);
+    if (old_shm != -1) {
+        shmctl(old_shm, IPC_RMID, NULL);
+    }
+
     CafeteriaConfig *cfg = get_shared_config();
     if (cfg) {
+        memset(cfg, 0, sizeof(CafeteriaConfig));
         cfg->ramen_ratio       = DEFAULT_RAMEN_RATIO;
         cfg->ramen_prep_min    = DEFAULT_RAMEN_PREP_MIN;
         cfg->ramen_prep_max    = DEFAULT_RAMEN_PREP_MAX;
@@ -26,7 +39,8 @@ int main() {
         cfg->kare_prep_max     = DEFAULT_KARE_PREP_MAX;
         cfg->max_eating_time   = DEFAULT_MAX_EATING_TIME;
         cfg->num_tables        = DEFAULT_NUM_TABLES;
-        printf("  Shared Config initialized with default values.\n");
+        printf("  Shared Config & Table Array initialized (Capacity: %d tables, Active: %d tables).\n",
+               MAX_TABLE_SLOTS, cfg->num_tables);
     } else {
         printf("  [ERROR] Failed to initialize Shared Config.\n");
     }

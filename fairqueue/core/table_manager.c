@@ -1,44 +1,60 @@
 #include "sharedef.h"
+#include <signal.h>
+
+static volatile int running = 1;
+void handle_sig(int sig) { running = 0; }
 
 // Table Manager:
-// - Lấy 1 student từ Q_TABLE
-// - Random thời gian ăn trong khoảng (1 -> max_eating_time)
-// - Sleep
-// - Xóa/hoàn tất (rời khỏi căng tin)
+// - Quản lý mảng bàn ăn trong Shared Memory
+// - Trong mỗi vòng lặp (mỗi giây), đếm ngược eating_time của từng student đang ngồi ăn
+// - Khi eating_time == 0:
+//     + Ghi log hoàn thành ("TABLE")
+//     + Thông báo sinh viên rời khỏi căng tin & bàn được giải phóng
+//     + Reset slot bàn (occupied = 0) để waiting_dispatcher có thể xếp người tiếp theo vào
 int main() {
-    int msgid_table = msgget(ftok(".", KEY_TABLE), 0666 | IPC_CREAT);
-    if (msgid_table < 0) { perror("MSGGET Error"); return 1; }
+    signal(SIGINT,  handle_sig);
+    signal(SIGTERM, handle_sig);
 
     CafeteriaConfig *cfg = get_shared_config();
-    srand(time(NULL) + 3);
-
-    printf("=== TABLE MANAGER (EATING WORKER) STARTED ===\n");
-    printf("Listening on Q_TABLE...\n");
-
-    while (1) {
-        struct mesg_buffer msg;
-        // Block chờ student trong Q_TABLE
-        if (msgrcv(msgid_table, &msg, sizeof(Student), 0, 0) == -1) continue;
-
-        double wait_time = difftime(time(NULL), msg.student.enter_queue_time);
-
-        int max_eat = cfg ? cfg->max_eating_time : DEFAULT_MAX_EATING_TIME;
-        if (max_eat < 1) max_eat = 1;
-
-        // Thời gian dùng 1 bàn random trong khoảng 1 -> max_eating_time
-        int eat_time = 1 + rand() % max_eat;
-
-        printf("[Table] Student %d sits at table | %s | Wait: %.0fs | Eating: %ds (max=%ds)\n",
-               msg.student.id, food_name(msg.student.food), wait_time, eat_time, max_eat);
-
-        sleep(eat_time);
-
-        printf("[Table] Student %d finished eating & left the cafeteria. Table freed!\n",
-               msg.student.id);
-
-        write_log("TABLE", msg.student.id, food_name(msg.student.food),
-                  wait_time, eat_time);
+    if (!cfg) {
+        fprintf(stderr, "[ERROR] Cannot access Shared Config/Tables!\n");
+        return 1;
     }
 
+    printf("=== TABLE MANAGER (SHARED MEMORY WORKER) STARTED ===\n");
+    printf("Monitoring and counting down eating time for all active tables in parallel...\n");
+
+    while (running) {
+        sleep(1);
+
+        int active_count = 0;
+        for (int i = 0; i < MAX_TABLE_SLOTS; i++) {
+            if (cfg->tables[i].occupied) {
+                cfg->tables[i].remaining_time--;
+
+                if (cfg->tables[i].remaining_time <= 0) {
+                    // Sinh viên đã ăn xong
+                    Student s = cfg->tables[i].student;
+                    int eat_time = cfg->tables[i].total_eat_time;
+                    double wait_time = s.wait_time_table;
+
+                    printf("[Table] Student %d finished eating at Table #%d & left cafeteria. Table freed! (Ate: %ds)\n",
+                           s.id, i + 1, eat_time);
+
+                    write_log("TABLE", s.id, food_name(s.food), wait_time, eat_time);
+
+                    // Giải phóng slot bàn
+                    cfg->tables[i].occupied = 0;
+                    cfg->tables[i].remaining_time = 0;
+                    cfg->tables[i].total_eat_time = 0;
+                    memset(&cfg->tables[i].student, 0, sizeof(Student));
+                } else {
+                    active_count++;
+                }
+            }
+        }
+    }
+
+    printf("Table manager stopped.\n");
     return 0;
 }

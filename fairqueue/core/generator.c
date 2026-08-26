@@ -25,15 +25,17 @@ int main() {
            total_limit, max_batch, interval);
 
     while (id_counter <= total_limit) {
-        sleep(interval);
+        
 
-        int count = 1 + rand() % max_batch;
+        // int count = 1 + rand() % max_batch;
+        int count = max_batch;
         for (int i = 0; i < count && id_counter <= total_limit; i++) {
             struct mesg_buffer msg;
             msg.mesg_type          = 1;
             msg.student.id         = id_counter++;
             msg.student.arrive_time      = time(NULL);
             msg.student.enter_queue_time = time(NULL);
+            msg.student.eating_time = 10 + rand() % (cfg ? cfg->max_eating_time : DEFAULT_MAX_EATING_TIME);
 
             // Quyết định món dựa trên ramen_ratio được cấu hình
             int ratio = cfg ? cfg->ramen_ratio : DEFAULT_RAMEN_RATIO;
@@ -44,11 +46,12 @@ int main() {
             }
 
             if (msgsnd(msgid, &msg, sizeof(Student), 0) == 0) {
-                printf("[Generator] Student %d (%s) -> Q_CASHING [%d/%d]\n",
+                printf("[Generator] Student %d (%s) -> Q_CASHING [%d/%d] | Eating Time: %ds\n",
                        msg.student.id, food_name(msg.student.food),
-                       msg.student.id, total_limit);
+                       msg.student.id, total_limit, msg.student.eating_time);
             }
         }
+        sleep(interval);
     }
 
     printf("[Generator] Finished generating all %d students.\n", total_limit);
