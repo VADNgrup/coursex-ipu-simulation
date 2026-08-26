@@ -27,7 +27,8 @@ int main() {
     while (id_counter <= total_limit) {
         sleep(interval);
 
-        int count = 1 + rand() % max_batch;
+        // int count = 1 + rand() % max_batch;
+        int count = max_batch;
         for (int i = 0; i < count && id_counter <= total_limit; i++) {
             struct mesg_buffer msg;
             msg.mesg_type          = 1;
