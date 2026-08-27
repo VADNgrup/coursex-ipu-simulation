@@ -35,7 +35,7 @@ int main() {
             msg.student.id         = id_counter++;
             msg.student.arrive_time      = time(NULL);
             msg.student.enter_queue_time = time(NULL);
-            msg.student.eating_time = 10 + rand() % (cfg ? cfg->max_eating_time : DEFAULT_MAX_EATING_TIME);
+            msg.student.eating_time = 300 + rand() % (cfg ? cfg->max_eating_time : DEFAULT_MAX_EATING_TIME);
 
             // Quyết định món dựa trên ramen_ratio được cấu hình
             int ratio = cfg ? cfg->ramen_ratio : DEFAULT_RAMEN_RATIO;
