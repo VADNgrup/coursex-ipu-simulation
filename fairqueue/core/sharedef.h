@@ -69,7 +69,7 @@ typedef struct {
 #define DEFAULT_RAMEN_PREP_MAX   25
 #define DEFAULT_KARE_PREP_MIN    20
 #define DEFAULT_KARE_PREP_MAX    30
-#define DEFAULT_MAX_EATING_TIME  600 // 10 minutes
+#define DEFAULT_MAX_EATING_TIME  900 // 15 minutes
 #define DEFAULT_NUM_TABLES       50
 
 // ============================================================

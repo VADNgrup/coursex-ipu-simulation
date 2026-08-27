@@ -11,4 +11,6 @@ gcc core/waiting_dispatcher.c -o .build/waiting_dispatcher
 gcc core/table_manager.c      -o .build/table_manager
 gcc core/dashboard.c          -o .build/dashboard
 gcc core/control_panel.c      -o .build/control_panel
-echo "Done! Binaries in .build/"
+
+.build/init_mq
+echo "Done! Binaries in .build/ and log file in ./.tmp"
